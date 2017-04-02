@@ -1,12 +1,12 @@
 # ai-sentence-generator
-Lisp program that generates random sentences using a [context-free grammar](https://en.wikipedia.org/wiki/Context-free_grammar).
+Proof of concept Lisp program that generates random sentences using a [context-free grammar](https://en.wikipedia.org/wiki/Context-free_grammar).
 
 ## Features
 * Defines more advanced production rules.
 * Implements non-terminal symbols (ex. adjective, preposition, RelativeClause, InfinitivePhrase, etc.).
 * Non-terminal symbols handle singular/plural nouns, present/past tense verbs, transitive/intransitive verbs, and more.
 * Accepts/rejects generated sentences based on certain criteria, including length, tree depth, repetition, and subordinating/coordinating conjunction counts.
-* Prefixes valid sentences with a "+" and rejected sentences with a "-".
+* Prefixes valid sentences with a "+" and rejected sentences with a "-" in output file.
 
 ## Files
 File|Description
