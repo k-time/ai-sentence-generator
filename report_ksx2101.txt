@@ -1,0 +1,249 @@
+Kenneth Xiao (ksx2101)
+
+All 5 corpus sentences generate correctly.
+
+q1_ksx2101.txt contains 1000 randomly generated sentences. I used the loop-run function that was 
+emailed to us to output the sentences to the file. Valid sentences are prefixed with a "+", 
+while sentences that have been rejected by validp are prefixed with a "-".
+
+I have 5 helper functions for validp. check-length, check-depth, check-for-repeats,
+check-repeated-subordinating-conjunction, and check-coordinating-conjunction-count all return 
+true if the sentence is not rejected. validp simply ANDs together all these results, so if validp 
+returns true, then the sentence is valid.
+
+check-length - checks if sentence is 40 words or less
+check-depth - should check if the tree depth is 10 or less. I couldn't figure it out in time
+	so check-depth just always returns true
+checks-for-repeats - checks that no words are repeated, BUT CERTAIN TYPES OF WORDS ARE ALLOWED
+	TO BE REPEATED SUCH AS prepositions, articles, etc.
+check-repeated-subordinating-conjunction - checks that subordinating conjunctions never appear 
+twice in a row in the sentence
+check-coordinating-conjunction-count - checks if there are less than 8 coordinating conjunctions
+	in the sentence (ex. and, but)
+
+generateValid returns a valid phrase described by the non_term input. Ex. if you
+call generateValid('sentence), the function will generate a random sentence and check 
+if it's valid using validp. If it's valid, then the sentence will be returned. If not,
+the function will keep calling random-sentence until a valid sentence is returned.
+
+
+*** My grammar handles singular/plural noun phrases, present/past tense verbs, transitive/
+	intransitive verbs. I handled most cases, though not all because the number of rules would
+	be growing exponentially!
+
+	I make use of recursion (ex. sentence -> sentence and sentence) as well as
+	rules for optional part of speech (ex. NounPhraseSingular -> (Abstract Noun) (Abstract Noun 
+	Prep Phrase)). I added many pre-terminal symbols to make my grammar more sophisticated (ex.
+	Abstract Noun, RelativePronoun, InfinitiveVerb, HelpingVerb, LinkingVerb, Expletive, 
+	InfinitiveParticle) along with the advanced terminal symbols.
+
+
+
+****** My 5 Rules for Corpus (all generate correctly):
+
+(defparameter rules1 '((Sentence 0) (NounPhraseSingular 3) (AdjectivePhrase 0) (Adjective 0) (AbstractNoun 0) (VerbPhraseSingularPresent 0) (HelpingVerb 0)
+    (InfinitiveVerb 0) (NounPhraseSingular 4) (NounPhraseSingular 1) (Article 0) (AdjectivePhrase 0) (Adjective 1) (NounSingular 4) (PrepPhrase 0)
+    (Preposition 0) (NounPhraseSingular 2) (AbstractNoun 1)))
+
+(defparameter rules2 '((Sentence 0) (NounPhraseSingular 1) (Article 2) (AdjectivePhrase 0) (Adjective 2) (NounSingular 5) (VerbPhraseSingularPresent 1)
+    (HelpingVerb 1) (Adverb 0) (InfinitiveVerb 1) (NounPhraseSingular 1) (Article 0) (AdjectivePhrase 0) (Adjective 3) (NounSingular 6)))
+
+(defparameter rules3 '((Sentence 1) (ExpletivePhrase 0) (Expletive 0) (BeingVerb 0) (NounPhrasePlural 1) (NounPhrasePlural 6) (AdjectivePhrase 0) (Adjective 4)
+    (AttributiveNoun 1) (NounPlural 4) (PrepPhrase 1) (Preposition 1) (NounPhrasePlural 2) (AdjectivePhrase 0) (Adjective 6) (NounPhrasePlural 3) 
+    (NounPhrasePlural 4) (NounPlural 5) (RelativeClause 0) (RelativePronoun 0) (IntransitiveVerbPluralPresent 0) (InfinitivePhrase 0) (InfinitiveParticle 0)
+    (InfinitiveVerb 2) (Adverb 2) (PrepPhrase 2) (Determiner 0) (Preposition 2) (NounPhrasePlural 5) (NounPhrasePlural 0) (AdjectivePhrase 2) (Adjective 9)
+    (CoordinatingConjunction 0) (AdjectivePhrase 0) (Adjective 10) (NounPlural 6) (CoordinatingConjunction 0) (NounPhraseSingular 5) (AttributiveNoun 0)
+    (AbstractNoun 2)))
+
+(defparameter rules4 '((Sentence 2) (Sentence 0) (NounPhraseSingular 0) (Article 0) (NounSingular 7) (VerbPhraseSingularPresent 2) (HelpingVerb 1) (Adverb 1) 
+    (LinkingVerb 0) (Adjective 7) (PrepPhrase 0) (Preposition 3) (NounPhraseSingular 1) (Article 0) (AdjectivePhrase 0) (Adjective 8) (NounSingular 8)
+    (CoordinatingConjunction 1) (Sentence 4) (NounPhrasePlural 0) (AdjectivePhrase 0) (Adjective 12) (NounPlural 8) (VerbPhrasePluralPresent 0) (HelpingVerb 2) 
+    (LinkingVerb 0) (Adjective 13) (InfinitivePhrase 1) (InfinitiveParticle 0) (InfinitiveVerb 4) (PersonalPronoun 0) (PrepPhrase 1) (Preposition 4)
+    (NounPhrasePlural 4) (NounPlural 9)))
+
+(defparameter rules5 '((Sentence 3) (SubordinatingConjunction 0) (Sentence 0) (NounPhraseSingular 0) (Article 0) (NounSingular 9) (VerbPhraseSingularPresent 0) 
+    (HelpingVerb 1) (InfinitiveVerb 3) (NounPhraseSingular 4) (NounPhraseSingular 6) (Article 0) (AttributiveNoun 2) (NounSingular 10) (PrepPhrase 0)
+    (Preposition 1) (NounPhraseSingular 0) (Article 0) (NounSingular 11) (VerbPhraseFuturePerfect 0) (HelpingVerb 1) (LinkingVerb 0) (IntransitiveVerbPast 3)
+    (PrepPhrase 1) (Preposition 1) (NounPhrasePlural 7) (Article 1) (AdjectivePhrase 0) (Adjective 11) (NounPlural 7)))
+
+
+****** Output:
+
+Break 2 [3]> (targeted-sentence rules1)
+(HIGHER EDUCATION MUST COUNTER THE PREVAILING NARRATIVE OF POLARIZATION)
+Break 2 [3]> (targeted-sentence rules2)
+(THIS FLAWED STRATEGY WILL HARDLY ACHIEVE THE DESIRED INTENT)
+Break 2 [3]> (targeted-sentence rules3)
+(THERE WERE SOLID JOB GAINS IN SEVERAL INDUSTRIES THAT TEND TO PAY WELL SUCH AS BUSINESS AND PROFESSIONAL SERVICES AND HEALTH CARE)
+Break 2 [3]> (targeted-sentence rules4)
+(THE ASTEROID WILL NOT BE VISIBLE TO THE NAKED EYE BUT AMATEUR ASTRONOMERS SHOULD BE ABLE TO SEE IT WITH TELESCOPES)
+Break 2 [3]> (targeted-sentence rules5)
+(WHETHER THE PROSECUTION WILL SEEK THE DEATH PENALTY IN THE CASE WILL BE DECIDED IN A FEW WEEKS)
+
+
+
+****** My Grammar, New Symbols, New Production Rules
+
+
+Sentence: 
+
+- I added more complex sentence structures.
+- (NounPhraseSingular VerbPhraseSingularPresent) - A NounPhrase can be singular or plural. A verb
+	phrase can be singular or plural, and present or past. Example of this: "The happy boy talks
+	to his mother."
+- (ExpletivePhrase NounPhrasePlural) - An ExpletivePhrase is needed to handle the "There were..."
+	in sentence 3. An ExpletivePhrase consists of an Expletive + BeingVerb. Example: "There were
+	many children in the park."
+- (Sentence CoordinatingConjunction Sentence) - This is needed so two sentences can be joined by
+	an "and", "but", etc. Example: "I like to run in the park and I like to go to the gym."
+- (SubordinatingConjunction Sentence VerbPhraseFuturePerfect) - This is needed to handle sentence
+	5. A subordinating conjunction joins a main caluse and a dependent clause. Ex. "Whether my
+	friend passed his test is not known yet."
+- (NounPhrasePlural VerbPhrasePluralPresent) - This is the same as the first sentence rule, 
+	except it's for plural noun phrases. Ex. "My brothers swim in the lake."
+- (NounPhraseSingular VerbPhraseSingularPast)) - Same as first sentence rule, except it's for past
+	tense. "My sister baked me a cake."
+
+NounPhraseSingular:
+
+- This is for noun phrases that are singular.
+- (Article NounSingular) - ex. "The house"
+- (Article AdjectivePhrase NounSingular) - ex. "The red house"
+- (AbstractNoun) - It is a noun that a person can't physically interact with. Ex. "education"
+- (AdjectivePhrase AbstractNoun) - Ex. "Higher education"
+- (NounPhraseSingular PrepPhrase) - Ex. "house across the street"
+- (AttributiveNoun AbstractNoun) - An attributive noun is a noun that describes another noun. Ex.
+	"Health care" (health is an attributive noun)
+- (Article AttributiveNoun NounSingular)) - Ex. "The government agency"
+
+NounPhrasePlural:
+
+- This is for noun phrases that are plural.
+- (AdjectivePhrase NounPlural) - ex. "Yellow and brown bananas"
+- (NounPhrasePlural PrepPhrase) - ex. "bananas in the basket"
+- (AdjectivePhrase NounPhrasePlural PrepPhrase) ex. "Yellow and brown bananas in the basket"
+- (NounPhrasePlural RelativeClause) - A relative clause is like an adjective clause- it gives more
+	information about a noun. Ex. "bananas that went bad"
+- (NounPlural) - Ex. "Bananas"
+- (NounPhrasePlural CoordinatingConjunction NounPhraseSingular) - Ex. "Bananas and a kiwi"
+- (AdjectivePhrase AttributiveNoun NounPlural) Ex. "Great health services"
+- (Article AdjectivePhrase NounPlural)) Ex. "The healthy boys"
+
+VerbPhraseSingularPast:
+
+- This is a past tense verb phrase that matches a singular noun-phrase.
+- (IntransitiveVerbPast) - An intransitive verb is one that can stand on its own without a direct
+	object. Ex. "I laughed" uses a past tense IV
+- (IntransitiveVerbPast PrepPhrase) - An IV can be followed by a prep phrase 
+- (TransitiveVerbPast NounPhraseSingular) - A transitive verb needs a direct object, which is why
+	it's followed by a NounPhraseSingular. Ex - "broke the vase"
+- (TransitiveVerbPast NounPhraseSingular PrepPhrase - Same as last one, except it has a 
+	prepositional phrase option
+
+VerbPhraseSingularPresent:
+
+- A present tense verb phrase that matches a singular noun-phrase.
+- (HelpingVerb InfinitiveVerb NounPhraseSingular). A helping verb helps out the main verb in a 
+	sentence. An InfinitiveVerb is a verb in its most basic form. Ex. "should bake cookies"
+- (HelpingVerb Adverb InfinitiveVerb NounPhraseSingular) - This is the same as the previous one 
+	except it has an option adverb. "should happily bake cookies"
+- (HelpingVerb Adverb LinkingVerb Adjective PrepPhrase) - This links a noun-phrase to an 
+	adjective using a helping verb and linking verb. The adverb and prep-phrase are just more
+	advanced options that build off this sentence structure. ex. "He should be happy",
+	"He should really be happy at the park"
+- (IntransitiveVerbSingularPresent) - This is a present tense IV that follows a singular noun
+	phrase. Ex. "He laughs"
+- (IntransitiveVerbSingularPresent PrepPhrase) - Same as previous one, just adds an optional
+	prep phrase. Ex. "He laughs at the joke"
+- (TransitiveVerbSingularPresent NounPhraseSingular) - ex. "counters the attack"
+- (TransitiveVerbSingularPresent NounPhraseSingular PrepPhrase) - Same as previous one, just
+	adds an optional prep-phrase. Ex. "counters the attack in the park"
+
+
+VerbPhraseFuturePerfect:
+
+- This is a verb phrase that is in future perfect tense.
+- I only included one case for this because it was only needed for sentence 5. Otherwise, there
+	would be an exponentially growing number of sentences.
+- (HelpingVerb LinkingVerb IntransitiveVerbPast PrepPhrase)) - Past tense IV verbs are the same
+	for singular and plural noun phrases, so there is only one category of IntransitiveVerbPast.
+	Ex. "will be decided in a few weeks"
+
+VerbPhrasePluralPresent:
+
+- A present tense verb phrase that matches a plural noun-phrase.
+- I only included one case of this.
+- (HelpingVerb LinkingVerb Adjective InfinitivePhrase) - I'll define the infinitive phrase 
+	below. Ex. "should be able to see it"
+
+ExpletivePhrase: 
+
+-Expletives are words or phrases that do not add any structural or grammatical 
+	meaning to the sentence. It's used in sentence 3.
+- (Expletive BeingVerb) - "There were"
+
+AdjectivePhrase:
+
+- You can have multiple adjectives, so they're implemented with recursion.
+- (Adjective) - "happy"
+- (Adjective AdjectivePhrase) "big happy"
+- (Adjective CoordinatingConjunction AdjectivePhrase) - "big and happy" 
+
+PrepPhrase: 
+
+- A prepositional phrase will begin with a preposition and end with a noun, pronoun, gerund,
+	or clause. I only needed to use the noun/noun-phrase.
+- (Preposition NounPhraseSingular) - "at the park"
+- (Preposition NounPhrasePlural) - "near the buildings"
+- (Determiner Preposition NounPhrasePlural) - "such as business services"
+
+RelativeClause:
+
+- A relative clause is like an adjective clause- it gives more information about a noun.
+- I only had one type of relative clause because it's all I needed.
+- (RelativePronoun IntransitiveVerbPluralPresent InfinitivePhrase) - ex. "that tend to 
+	pay well" 
+
+InfinitivePhrase:
+
+- Consists of "to" + InfinitiveVerb (simplest form of a verb)
+- (InfinitiveParticle InfinitiveVerb Adverb) - ex. "to pay well"
+- (InfinitiveParticle InfinitiveVerb PersonalPronoun PrepPhrase) - ex. "to see it with 
+	telescopes"
+
+
+
+
+**** PRE-TERMINAL SYMBOLS and TERMINAL SMYBOLS
+
+*** Nouns can be Abstract, Singular/Plural, Attributive, and types of Pronouns
+	(AbstractNoun -> education polarization care religion progress friendship culture service)
+	(NounSingular -> man ball woman table narrative strategy intent asteroid eye prosecution penalty case monkey cat student worker)
+	(NounPlural -> men balls women tables gains industries services weeks astronomers telescopes teachers companies industries)
+	(RelativePronoun -> that)
+	(AttributiveNoun -> health job death government)
+	(PersonalPronoun -> it)
+
+Verbs can be Transitive/Intransitive, Past/Present, Singular/Plural
+	(IntransitiveVerbPast -> laughed cried sneezed decided)
+	(IntransitiveVerbSingularPresent -> laughs cries)
+	(IntransitiveVerbPluralPresent -> tend)
+	(TransitiveVerbPast -> challenged pushed defeated)
+	(TransitiveVerbSingularPresent -> counters challenges pushes defeats)
+
+Other types of verbs
+	(InfinitiveVerb -> counter achieve pay seek see)
+	(HelpingVerb -> must will should)
+	(BeingVerb -> were)
+	(LinkingVerb -> be)
+
+Other symbols
+	(Adverb -> hardly not well)
+	(Article -> the a this)
+	(Adjective -> higher prevailing flawed desired solid important several visible naked business professional few amateur able happy amazing awesome helpful powerful interesting)
+	(CoordinatingConjunction -> and but)
+	(SubordinatingConjunction -> whether when)
+	(Preposition -> of in as to with at)
+	(Determiner -> such)
+	(Expletive -> there)
+	(InfinitiveParticle -> to))
